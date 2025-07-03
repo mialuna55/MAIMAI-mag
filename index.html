@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>MAIMAI雜誌</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: #fff;
+            font-family: "Helvetica Neue", sans-serif;
+            overflow-x: hidden;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .magazine {
+            display: flex;
+            flex-direction: row;
+            width: 90%;
+            max-width: 900px;
+            overflow: hidden;
+            position: relative;
+        }
+        .page {
+            min-width: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+        .page img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .button {
+            background-color: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .button:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2em;
+            letter-spacing: 2px;
+            color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>MAIMAI雜誌</h1>
+    <div class="container">
+        <div class="magazine" id="magazine">
+            <div class="page"><img src="page_1.jpg" alt="Page 1"></div>
+<div class="page"><img src="page_2.jpg" alt="Page 2"></div>
+<div class="page"><img src="page_3.jpg" alt="Page 3"></div>
+
+        </div>
+        <div class="controls">
+            <button class="button" onclick="prevPage()">‹</button>
+            <button class="button" onclick="nextPage()">›</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const magazine = document.getElementById('magazine');
+        const totalPages = 3;
+
+        function updateView() {
+            magazine.style.transform = `translateX(-${currentPage * 100}%)`;
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                updateView();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updateView();
+            }
+        }
+    </script>
+</body>
+</html>
