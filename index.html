@@ -1,111 +1,67 @@
-
-<!DOCTYPE html>
-<html lang="zh-Hant">
+<!DOCTYPE html><html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>MAIMAI雜誌</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIMAI雜誌</title>
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            background: #111;
-            color: #fff;
-            font-family: "Helvetica Neue", sans-serif;
-            overflow-x: hidden;
-        }
-        .container {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #2c2c2c;
+            min-height: 100vh;
             display: flex;
-            flex-direction: row;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
-        }
-        .magazine {
-            display: flex;
-            flex-direction: row;
-            width: 90%;
-            max-width: 900px;
+            align-items: center;
             overflow: hidden;
+        }
+        .magazine-container {
             position: relative;
+            width: 900px;
+            height: 650px;
+            perspective: 1200px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
+        .book { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
         .page {
-            min-width: 100%;
-            transition: transform 0.6s ease-in-out;
+            position: absolute; width: 50%; height: 100%; top: 0; right: 0;
+            background: white; transform-origin: left center;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
         }
-        .page img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .page::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, transparent 10%);
+            z-index: 2; opacity: 0;
+            transition: opacity 0.3s ease;
         }
+        .page.flipping::before { opacity: 1; }
+        .page-front, .page-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; overflow: hidden;
+        }
+        .page-back { transform: rotateY(180deg); }
+        .page-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .page.turned { transform: rotateY(-180deg); }
+        .page:nth-child(1) { z-index: 8; }
+        .page:nth-child(2) { z-index: 7; }
+        .page:nth-child(3) { z-index: 6; }
+        .left-page {
+            position: absolute; width: 50%; height: 100%; top: 0; left: 0;
+            background: white; overflow: hidden;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        .left-page.show { opacity: 1; }
+        .left-page-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .cover-page {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            background: white; overflow: hidden; transition: opacity 0.5s ease; z-index: 10;
+        }
+        .cover-page.hidden { opacity: 0; pointer-events: none; }
+        .cover-image { width: 100%; height: 100%; object-fit: cover; display: block; }
         .controls {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-        }
-        .button {
-            background-color: rgba(0,0,0,0.5);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            font-size: 24px;
-            cursor: pointer;
-            user-select: none;
-        }
-        .button:hover {
-            background-color: rgba(255,255,255,0.2);
-        }
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 2em;
-            letter-spacing: 2px;
-            color: #f9f9f9;
-        }
-    </style>
-</head>
-<body>
-    <h1>MAIMAI雜誌</h1>
-    <div class="container">
-        <div class="magazine" id="magazine">
-            <div class="page"><img src="page_1.jpg" alt="Page 1"></div>
-<div class="page"><img src="page_2.jpg" alt="Page 2"></div>
-<div class="page"><img src="page_3.jpg" alt="Page 3"></div>
-
-        </div>
-        <div class="controls">
-            <button class="button" onclick="prevPage()">‹</button>
-            <button class="button" onclick="nextPage()">›</button>
-        </div>
-    </div>
-
-    <script>
-        let currentPage = 0;
-        const magazine = document.getElementById('magazine');
-        const totalPages = 3;
-
-        function updateView() {
-            magazine.style.transform = `translateX(-${currentPage * 100}%)`;
-        }
-
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                updateView();
-            }
-        }
-
-        function nextPage() {
-            if (currentPage < totalPages - 1) {
-                currentPage++;
-                updateView();
-            }
-        }
-
-           updateView();
-    </script>
-</body>
-</html>
+            position: absolute; top: 50%; left:
