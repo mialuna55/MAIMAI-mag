@@ -64,4 +64,164 @@
         .cover-page.hidden { opacity: 0; pointer-events: none; }
         .cover-image { width: 100%; height: 100%; object-fit: cover; display: block; }
         .controls {
-            position: absolute; top: 50%; left:
+            position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 100; pointer-events: none;
+        }
+        .btn {
+            width: 50px; height: 50px; background: rgba(255,255,255,0.3);
+            border: none; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease; backdrop-filter: blur(10px); pointer-events: all; opacity: 0.3;
+        }
+        .btn:hover { background: rgba(255,255,255,0.8); opacity: 1; transform: scale(1.1); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .btn-arrow-left {
+            width: 0; height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 12px solid #333;
+        }
+        .btn-arrow-right {
+            width: 0; height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="magazine-container">
+        <div class="book" id="book">
+            <div class="cover-page" id="coverPage">
+                <img src="page_1.jpg" alt="封面" class="cover-image">
+            </div>
+            <div class="left-page" id="leftPage">
+                <img src="page_1.jpg" alt="左頁" class="left-page-image" id="leftPageImage">
+            </div>
+            <div class="page" id="page1">
+                <div class="page-front">
+                    <img src="page_1.jpg" alt="第2頁" class="page-image">
+                </div>
+                <div class="page-back">
+                    <img src="page_2.jpg" alt="第3頁" class="page-image">
+                </div>
+            </div>
+            <div class="page" id="page2">
+                <div class="page-front">
+                    <img src="page_2.jpg" alt="第4頁" class="page-image">
+                </div>
+                <div class="page-back">
+                    <img src="page_3.jpg" alt="第5頁" class="page-image">
+                </div>
+            </div>
+            <div class="page" id="page3">
+                <div class="page-front">
+                    <img src="page_3.jpg" alt="第6頁" class="page-image">
+                </div>
+                <div class="page-back">
+                    <img src="page_1.jpg" alt="第7頁" class="page-image">
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="btn" id="prevBtn"><div class="btn-arrow-left"></div></button>
+            <button class="btn" id="nextBtn"><div class="btn-arrow-right"></div></button>
+        </div>
+    </div><script>
+    class DigitalMagazine {
+        constructor() {
+            this.currentPage = 0;
+            this.totalPages = 3;
+            this.isAnimating = false;
+            this.pages = [];
+            this.isOnCover = true;
+            this.leftPageImages = [
+                'page_1.jpg',
+                'page_2.jpg',
+                'page_3.jpg'
+            ];
+            this.init();
+        }
+
+        init() {
+            for (let i = 1; i <= this.totalPages; i++) {
+                this.pages.push(document.getElementById(`page${i}`));
+            }
+            this.bindEvents();
+            this.updateUI();
+        }
+
+        bindEvents() {
+            document.getElementById('prevBtn').addEventListener('click', () => this.previousPage());
+            document.getElementById('nextBtn').addEventListener('click', () => this.nextPage());
+        }
+
+        nextPage() {
+            if (this.isAnimating) return;
+            if (this.isOnCover) return this.openBook();
+            if (this.currentPage >= this.totalPages) return;
+            this.isAnimating = true;
+            const page = this.pages[this.currentPage];
+            page.classList.add('flipping');
+            setTimeout(() => {
+                page.classList.add('turned');
+                page.classList.remove('flipping');
+                this.currentPage++;
+                this.updateLeftPage();
+                this.updateUI();
+                this.isAnimating = false;
+            }, 400);
+        }
+
+        previousPage() {
+            if (this.isAnimating) return;
+            if (this.currentPage === 0) return this.closeBook();
+            this.isAnimating = true;
+            this.currentPage--;
+            const page = this.pages[this.currentPage];
+            page.classList.add('flipping');
+            setTimeout(() => {
+                page.classList.remove('turned');
+                page.classList.remove('flipping');
+                this.updateLeftPage();
+                this.updateUI();
+                this.isAnimating = false;
+            }, 400);
+        }
+
+        openBook() {
+            this.isAnimating = true;
+            document.getElementById('coverPage').classList.add('hidden');
+            document.getElementById('leftPage').classList.add('show');
+            this.isOnCover = false;
+            this.updateUI();
+            setTimeout(() => this.isAnimating = false, 500);
+        }
+
+        closeBook() {
+            this.isAnimating = true;
+            document.getElementById('coverPage').classList.remove('hidden');
+            document.getElementById('leftPage').classList.remove('show');
+            this.isOnCover = true;
+            this.updateUI();
+            setTimeout(() => this.isAnimating = false, 500);
+        }
+
+        updateLeftPage() {
+            const leftPageImage = document.getElementById('leftPageImage');
+            leftPageImage.src = this.leftPageImages[this.currentPage];
+        }
+
+        updateUI() {
+            document.getElementById('prevBtn').disabled = this.isOnCover;
+            document.getElementById('nextBtn').disabled = this.currentPage === this.totalPages;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        new DigitalMagazine();
+    });
+</script>
+
+</body>
+</html>
